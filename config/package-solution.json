@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "emprestimo-consignado-client-side-solution",
+    "id": "4d35f5c7-e48c-4e9c-a38e-57f5dd073621",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.18.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "emprestimoConsignado description"
+      },
+      "longDescription": {
+        "default": "emprestimoConsignado description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "emprestimo-consignado Feature",
+        "description": "The feature that activates elements of the emprestimo-consignado solution.",
+        "id": "f376f252-a1bb-450c-8875-0bfaef6f9c3d",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/emprestimo-consignado.sppkg"
+  }
+}
