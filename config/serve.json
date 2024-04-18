@@ -4,11 +4,11 @@
   "https": true,
   "serveConfigurations": {
     "default": {
-      "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+      "pageUrl": "https://cjinter.sharepoint.com/sites/newportal/_layouts/15/SPListForm.aspx",
       "formCustomizer": {
         "componentId": "c2217b6b-d9eb-4829-8220-8a9b21f75b81",
         "PageType": 8,
-        "RootFolder": "/sites/mySite/Lists/MyList",
+        "RootFolder": "/sites/newportal/Lists/EmprestimoConsignado",
         "properties": {
           "sampleText": "Value"
         }
