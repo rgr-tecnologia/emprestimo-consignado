@@ -1,94 +1,138 @@
-import * as React from 'react';
-import { Log, FormDisplayMode } from '@microsoft/sp-core-library';
-import { FormCustomizerContext } from '@microsoft/sp-listview-extensibility';
+import * as React from "react";
+import {
+  ComboBox,
+  PrimaryButton,
+  Stack,
+  StackItem,
+  TextField,
+} from "@fluentui/react";
+import { EmprestimoConsignado } from "../../../types/EmprestimoConsignado/EmprestimoConsignado";
 
-export interface IEmprestimoConsignadoProps {
-  context: FormCustomizerContext;
-  displayMode: FormDisplayMode;
-  onSave: () => void;
+export interface EmprestimoConsignadoProps {
+  initialValue: EmprestimoConsignado;
+  onSave: (data: EmprestimoConsignadoProps["initialValue"]) => Promise<void>;
   onClose: () => void;
 }
 
-const LOG_SOURCE: string = 'EmprestimoConsignado';
+export default function EmprestimoConsignado(
+  props: EmprestimoConsignadoProps
+): JSX.Element {
+  const { initialValue, onSave, onClose } = props;
+  const [formValues, setFormValues] =
+    React.useState<EmprestimoConsignado>(initialValue);
 
-
-
-const buttonStyle: React.CSSProperties = {
-  backgroundColor: 'blue',
-  color: 'white',
-  border: 'none', 
-  padding: '5px 10px', 
-  margin: '5px',
-  borderRadius: '3px', 
-  cursor: 'pointer',
-  width: '150px', 
-};
-
-const containerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-end', 
-};
-
-const columnStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  marginBottom: '10px',
-};
-
-export default class EmprestimoConsignado extends React.Component<IEmprestimoConsignadoProps, {}> {
-  public componentDidMount(): void {
-    Log.info(LOG_SOURCE, 'React Element: EmprestimoConsignado mounted');
+  function onChangeValorEmprestimo(value: string | undefined): void {
+    if (!value) {
+      return;
+    }
+    setFormValues((prev) => ({
+      ...prev,
+      ValorTotalEmprestimo: Number(value),
+      ValorParcela: Number(value) / Number(formValues.QuantidadeParcelas),
+    }));
   }
 
-  public componentWillUnmount(): void {
-    Log.info(LOG_SOURCE, 'React Element: EmprestimoConsignado unmounted');
+  function onChangeQuantidadeParcelas(value: number): void {
+    setFormValues((prev) => ({
+      ...prev,
+      QuantidadeParcelas: value,
+      ValorParcela: prev.ValorTotalEmprestimo / Number(value),
+    }));
   }
 
-  private redirectToNewRequest = () => {
-    window.location.href = '';
-  }
+  const QuantidadeParcelasOptions = new Array(12)
+    .fill(0)
+    .map((_: never, index: number) => ({
+      key: (index + 1).toString(),
+      text: (index + 1).toString(),
+    }));
 
-  private redirectToCheckRequest = () => {
-    window.location.href = '';
-  }
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <Stack tokens={{ childrenGap: 10, padding: 20 }}>
+        <StackItem>
+          <Stack horizontal>
+            <StackItem>
+              <TextField
+                label="Nome do colaborador"
+                value={formValues.Colaborador.NomeColaborador}
+                readOnly={true}
+                borderless
+              />
+            </StackItem>
+            <StackItem>
+              <TextField
+                label="Departamento do colaborador"
+                value={formValues.Colaborador.Departamento.Title}
+                readOnly={true}
+                borderless
+              />
+            </StackItem>
+          </Stack>
+        </StackItem>
 
-  private redirectToCancelRequest = () => {
-    window.location.href = '';
-  }
+        <StackItem>
+          <Stack
+            horizontal
+            tokens={{
+              childrenGap: 10,
+            }}
+          >
+            <StackItem>
+              <TextField
+                label="Valor total do empréstimo"
+                value={formValues.ValorTotalEmprestimo.toString()}
+                onChange={(
+                  e: React.FormEvent<HTMLInputElement>,
+                  value: string
+                ) => onChangeValorEmprestimo(value)}
+              />
+            </StackItem>
+            <StackItem>
+              <ComboBox
+                label="Quantidade de parcelas"
+                selectedKey={formValues.QuantidadeParcelas.toString()}
+                options={QuantidadeParcelasOptions}
+                onChange={(_, option) =>
+                  onChangeQuantidadeParcelas(Number(option?.key))
+                }
+              />
+            </StackItem>
+            <StackItem>
+              <TextField
+                label="Valor da parcela"
+                value={formValues.ValorParcela.toString()}
+                readOnly={true}
+                borderless
+              />
+            </StackItem>
+          </Stack>
+        </StackItem>
 
-  public render(): React.ReactElement<{}> {
-    return (
-      <div style={containerStyle}>
-        <div style={columnStyle}>
-          <label>Nome Colaborador</label>
-          <input type="text" />
-        </div>
-        <div style={columnStyle}>
-          <label>Depto</label>
-          <input type="text" />
-        </div>
-        <div style={columnStyle}>
-          <label>Filial</label>
-          <input type="text" />
-        </div>
-        <div style={columnStyle}>
-          <label>Valor total Empréstimo</label>
-          <input type="text" />
-        </div>
-        <div style={columnStyle}>
-          <label>Valor Parcela</label>
-          <input type="text" />
-        </div>
-        <div style={columnStyle}>
-          <label>Quantidade de Parcelas</label>
-          <input type="number" />
-        </div>
-        <button style={{ ...buttonStyle, borderRadius: '3px 3px 3px 3px', marginLeft: 'auto' }} onClick={this.redirectToNewRequest}>Nova Solicitação</button>
-
-        <button style={{ ...buttonStyle, borderRadius: '3px 3px 3px 3px' }} onClick={this.redirectToCheckRequest}>Consultar Solicitação</button>
-        <button style={{ ...buttonStyle, borderRadius: '3px 3px 3px 3px' }} onClick={this.redirectToCancelRequest}>Cancelar Solicitação</button>
-      </div>
-    );
-  }
+        <StackItem>
+          <Stack tokens={{ childrenGap: 10 }} horizontal>
+            <StackItem>
+              <PrimaryButton
+                onClick={async () => {
+                  await onSave(formValues);
+                  //onClose();
+                }}
+              >
+                Salvar e enviar
+              </PrimaryButton>
+            </StackItem>
+            <StackItem>
+              <PrimaryButton onClick={onClose}>Fechar</PrimaryButton>
+            </StackItem>
+          </Stack>
+        </StackItem>
+      </Stack>
+    </div>
+  );
 }
