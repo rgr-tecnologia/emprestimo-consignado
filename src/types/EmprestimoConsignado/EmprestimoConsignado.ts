@@ -5,4 +5,5 @@ export type EmprestimoConsignado = {
   ValorTotalEmprestimo: number;
   ValorParcela: number;
   QuantidadeParcelas: number;
+  Status: string;
 };

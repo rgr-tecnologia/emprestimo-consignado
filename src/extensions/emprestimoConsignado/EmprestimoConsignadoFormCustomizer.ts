@@ -28,8 +28,7 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
   private colaboradoresListId: string = "2511179d-6e7d-4027-b73f-7136363f96f2";
   private departamentosListId: string = "cd8b62cc-eaad-458a-a647-e2ef592d9b26";
   private filialListId:  string = "bd591e12-52eb-444f-bc66-928c82a53065";
-  private emprestimosConsignadosListId: string =
-    "302dfc4c-c220-467f-8ab5-cd9349ea89c9";
+  private emprestimosConsignadosListId: string = "302dfc4c-c220-467f-8ab5-cd9349ea89c9";
 
   private colaborador: Colaborador = {
     Id: 0,
@@ -123,6 +122,7 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
           ValorTotalEmprestimo: 0,
           ValorParcela: 0,
           QuantidadeParcelas: 12,
+          Status:"-", 
         },
       } as EmprestimoConsignadoProps
     );
@@ -135,6 +135,7 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
     ReactDOM.unmountComponentAtNode(this.domElement);
     super.onDispose();
   }
+  
 
   private _onSave = async (
     data: EmprestimoConsignadoProps["initialValue"]
@@ -151,6 +152,7 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
       ValorParcela: data.ValorParcela,
       QuantidadeParcelas: data.QuantidadeParcelas,
       ColaboradorId: data.Colaborador.Id,
+      Status: "Em analise",
     });
 
     //this.formSaved();

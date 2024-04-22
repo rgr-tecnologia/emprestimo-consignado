@@ -1,6 +1,8 @@
 import * as React from "react";
 import {
   ComboBox,
+  MessageBar,
+  MessageBarType,
   PrimaryButton,
   Stack,
   StackItem,
@@ -10,16 +12,19 @@ import { EmprestimoConsignado } from "../../../types/EmprestimoConsignado/Empres
 
 export interface EmprestimoConsignadoProps {
   initialValue: EmprestimoConsignado;
-  onSave: (data: EmprestimoConsignadoProps["initialValue"]) => Promise<void>;
-  onClose: () => void;
+  onSave: (data: EmprestimoConsignado) => Promise<void>;
 }
 
 export default function EmprestimoConsignado(
   props: EmprestimoConsignadoProps
 ): JSX.Element {
-  const { initialValue, onSave, onClose } = props;
+  const { initialValue, onSave } = props;
   const [formValues, setFormValues] =
-    React.useState<EmprestimoConsignado>(initialValue);
+    React.useState<EmprestimoConsignado>({
+      ...initialValue,
+      QuantidadeParcelas: 1, 
+    });
+  const [isSent, setIsSent] = React.useState(false);
 
   function onChangeValorEmprestimo(value: string | undefined): void {
     if (!value) {
@@ -28,7 +33,8 @@ export default function EmprestimoConsignado(
     setFormValues((prev) => ({
       ...prev,
       ValorTotalEmprestimo: Number(value),
-      ValorParcela: Number(value) / Number(formValues.QuantidadeParcelas),
+      ValorParcela: Number(value) / Number(prev.QuantidadeParcelas)
+      
     }));
   }
 
@@ -36,16 +42,34 @@ export default function EmprestimoConsignado(
     setFormValues((prev) => ({
       ...prev,
       QuantidadeParcelas: value,
-      ValorParcela: prev.ValorTotalEmprestimo / Number(value),
+      ValorParcela: prev.ValorTotalEmprestimo / value,
     }));
   }
+  
 
-  const QuantidadeParcelasOptions = new Array(12)
-    .fill(0)
-    .map((_: never, index: number) => ({
-      key: (index + 1).toString(),
-      text: (index + 1).toString(),
-    }));
+  const QuantidadeParcelasOptions = [
+    { key: "1", text: "1" },
+    { key: "2", text: "2" },
+    { key: "3", text: "3" },
+    { key: "4", text: "4" },
+    { key: "5", text: "5" },
+    { key: "6", text: "6" },
+    { key: "7", text: "7" },
+    { key: "8", text: "8" },
+    { key: "9", text: "9" },
+    { key: "10", text: "10" },
+    { key: "11", text: "11" },
+    { key: "12", text: "12" } 
+  ];
+
+  async function handleApproveAndSend() {
+    await onSave(formValues);
+    setIsSent(true);
+  }
+
+  function handleCancel() {
+    window.location.reload();
+  }
 
   return (
     <div
@@ -83,6 +107,27 @@ export default function EmprestimoConsignado(
                 borderless
               />
             </StackItem>
+
+            <StackItem>
+              <TextField
+                label="Dia"
+                value={new Date().toLocaleDateString('pt-BR')}
+                readOnly={true}
+                borderless
+                style={{ marginRight: "50px" }}
+              />
+            </StackItem>
+
+            <StackItem>
+              <TextField
+                label="Status"
+                value={formValues.Status.toString()}
+                readOnly={true}
+                borderless
+                style={{ marginRight: "50px" }}
+              />
+            </StackItem>
+
           </Stack>
         </StackItem>
         <StackItem>
@@ -92,7 +137,7 @@ export default function EmprestimoConsignado(
               value={formValues.ValorTotalEmprestimo.toString()}
               onChange={(
                 e: React.FormEvent<HTMLInputElement>,
-                value: string
+                value: string | undefined
               ) => onChangeValorEmprestimo(value)}
             />
             <ComboBox
@@ -100,12 +145,12 @@ export default function EmprestimoConsignado(
               selectedKey={formValues.QuantidadeParcelas.toString()}
               options={QuantidadeParcelasOptions}
               onChange={(_, option) =>
-                onChangeQuantidadeParcelas(Number(option?.key))
+                onChangeQuantidadeParcelas(Number(option?.key || 1))
               }
             />
             <TextField
-              label="Valor da parcela"
-              value={formValues.ValorParcela.toString()}
+              label="Valor da parcela (R$)"
+              value={`R$ ${formValues.ValorParcela.toString()}`}
               readOnly={true}
               borderless
             />
@@ -113,17 +158,22 @@ export default function EmprestimoConsignado(
         </StackItem>
         <StackItem>
           <Stack tokens={{ childrenGap: 10 }}>
-            <PrimaryButton
-              onClick={async () => {
-                await onSave(formValues);
-                //onClose();
-              }}
-            >
-              Approve and Send
+            <PrimaryButton onClick={handleApproveAndSend}>
+              Send to Approve
             </PrimaryButton>
-            <PrimaryButton onClick={onClose}>Cancel</PrimaryButton>
+            <PrimaryButton onClick={handleCancel}>Cancel</PrimaryButton>
           </Stack>
         </StackItem>
+        {isSent && (
+          <StackItem>
+            <MessageBar
+              messageBarType={MessageBarType.success}
+              isMultiline={false}
+            >
+              Solicitação de empréstimo enviada com sucesso!
+            </MessageBar>
+          </StackItem>
+        )}
       </Stack>
     </div>
   );
