@@ -4,4 +4,5 @@ export type ColaboradorResponse = {
   Email: string;
   Telefone: string;
   DepartamentoId: number;
+  FilialId: number;
 };

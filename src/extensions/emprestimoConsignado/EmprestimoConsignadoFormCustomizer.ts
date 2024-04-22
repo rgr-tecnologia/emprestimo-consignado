@@ -27,6 +27,7 @@ export interface IEmprestimoConsignadoFormCustomizerProperties {
 export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomizer<IEmprestimoConsignadoFormCustomizerProperties> {
   private colaboradoresListId: string = "2511179d-6e7d-4027-b73f-7136363f96f2";
   private departamentosListId: string = "cd8b62cc-eaad-458a-a647-e2ef592d9b26";
+  private filialListId:  string = "bd591e12-52eb-444f-bc66-928c82a5306";
   private emprestimosConsignadosListId: string =
     "302dfc4c-c220-467f-8ab5-cd9349ea89c9";
 
@@ -35,11 +36,19 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
     NomeColaborador: "",
     Email: "",
     Telefone: "",
+    
     Departamento: {
       Id: 0,
       Title: "",
       Ativo: false,
     },
+
+    Filial:{
+      Id: 0,
+      Title: "",
+    }
+
+    
   };
 
   private getColaborador = async (): Promise<Colaborador> => {
@@ -65,17 +74,32 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
 
     const departamento = await departamentoResponse.json();
 
+    const filialResponse = await this.context.spHttpClient.get(
+      `${this.context.pageContext.web.absoluteUrl}/_api/web/lists(guid'${this.filialListId}')/items(${colaborador.FilialId})`,
+      SPHttpClient.configurations.v1
+    )
+
+    const filial = await filialResponse.json();
+
     return {
       Id: colaborador.Id,
       NomeColaborador: colaborador.Title,
       Email: colaborador.Email,
       Telefone: colaborador.Telefone,
+      
       Departamento: {
         Id: departamento.Id,
         Title: departamento.Title,
         Ativo: departamento.Ativo,
+
       },
+
+      Filial: {
+        Id: filial.Id,
+        Title: filial.Title,
+      }
     };
+
   };
 
   public async onInit(): Promise<void> {

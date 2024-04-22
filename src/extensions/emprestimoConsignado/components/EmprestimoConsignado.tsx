@@ -57,7 +57,7 @@ export default function EmprestimoConsignado(
     >
       <Stack tokens={{ childrenGap: 10, padding: 20 }}>
         <StackItem>
-          <Stack horizontal>
+          <Stack horizontal verticalAlign="center">
             <StackItem>
               <TextField
                 label="Nome do colaborador"
@@ -72,64 +72,56 @@ export default function EmprestimoConsignado(
                 value={formValues.Colaborador.Departamento.Title}
                 readOnly={true}
                 borderless
-              />
-            </StackItem>
-          </Stack>
-        </StackItem>
-
-        <StackItem>
-          <Stack
-            horizontal
-            tokens={{
-              childrenGap: 10,
-            }}
-          >
-            <StackItem>
-              <TextField
-                label="Valor total do empréstimo"
-                value={formValues.ValorTotalEmprestimo.toString()}
-                onChange={(
-                  e: React.FormEvent<HTMLInputElement>,
-                  value: string
-                ) => onChangeValorEmprestimo(value)}
-              />
-            </StackItem>
-            <StackItem>
-              <ComboBox
-                label="Quantidade de parcelas"
-                selectedKey={formValues.QuantidadeParcelas.toString()}
-                options={QuantidadeParcelasOptions}
-                onChange={(_, option) =>
-                  onChangeQuantidadeParcelas(Number(option?.key))
-                }
+                style={{ marginRight: "50px" }}
               />
             </StackItem>
             <StackItem>
               <TextField
-                label="Valor da parcela"
-                value={formValues.ValorParcela.toString()}
+                label="Filial"
+                value={formValues.Colaborador.Filial.Title}
                 readOnly={true}
                 borderless
               />
             </StackItem>
           </Stack>
         </StackItem>
-
         <StackItem>
-          <Stack tokens={{ childrenGap: 10 }} horizontal>
-            <StackItem>
-              <PrimaryButton
-                onClick={async () => {
-                  await onSave(formValues);
-                  //onClose();
-                }}
-              >
-                Salvar e enviar
-              </PrimaryButton>
-            </StackItem>
-            <StackItem>
-              <PrimaryButton onClick={onClose}>Fechar</PrimaryButton>
-            </StackItem>
+          <Stack>
+            <TextField
+              label="Valor total do empréstimo"
+              value={formValues.ValorTotalEmprestimo.toString()}
+              onChange={(
+                e: React.FormEvent<HTMLInputElement>,
+                value: string
+              ) => onChangeValorEmprestimo(value)}
+            />
+            <ComboBox
+              label="Quantidade de parcelas"
+              selectedKey={formValues.QuantidadeParcelas.toString()}
+              options={QuantidadeParcelasOptions}
+              onChange={(_, option) =>
+                onChangeQuantidadeParcelas(Number(option?.key))
+              }
+            />
+            <TextField
+              label="Valor da parcela"
+              value={formValues.ValorParcela.toString()}
+              readOnly={true}
+              borderless
+            />
+          </Stack>
+        </StackItem>
+        <StackItem>
+          <Stack tokens={{ childrenGap: 10 }}>
+            <PrimaryButton
+              onClick={async () => {
+                await onSave(formValues);
+                //onClose();
+              }}
+            >
+              Approve and Send
+            </PrimaryButton>
+            <PrimaryButton onClick={onClose}>Cancel</PrimaryButton>
           </Stack>
         </StackItem>
       </Stack>
