@@ -82,7 +82,7 @@ export default function EmprestimoConsignado(
     { key: "12", text: "12" },
   ];
 
-  if (hasApplicationInProgress) {
+  if (hasApplicationInProgress && formValues.Status === "Rascunho") {
     return (
       <div
         style={{
