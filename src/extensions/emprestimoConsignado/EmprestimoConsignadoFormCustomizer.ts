@@ -135,7 +135,10 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
       Promise.resolve();
     }
 
-    if (FormDisplayMode.Edit === this.displayMode) {
+    if (
+      FormDisplayMode.Edit === this.displayMode ||
+      FormDisplayMode.Display === this.displayMode
+    ) {
       const id = this.context.pageContext.listItem?.id;
 
       if (!id) {
@@ -191,7 +194,10 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
   ): Promise<EmprestimoConsignadoResponse> => {
     // You MUST call this.formSaved() after you save the form.
 
-    if (FormDisplayMode.Edit === this.displayMode) {
+    if (
+      FormDisplayMode.Edit === this.displayMode ||
+      FormDisplayMode.Display === this.displayMode
+    ) {
       const id = this.context.pageContext.listItem?.id;
 
       if (!id) {
