@@ -18,12 +18,19 @@ export interface EmprestimoConsignadoProps {
   isMemberHR: boolean;
   initialValue: EmprestimoConsignado;
   onSave: (data: EmprestimoConsignado) => Promise<EmprestimoConsignadoResponse>;
+  hasApplicationInProgress: boolean;
 }
 
 export default function EmprestimoConsignado(
   props: EmprestimoConsignadoProps
 ): JSX.Element {
-  const { initialValue, onSave, isEmployee, isMemberHR } = props;
+  const {
+    initialValue,
+    onSave,
+    isEmployee,
+    isMemberHR,
+    hasApplicationInProgress,
+  } = props;
   const [formValues, setFormValues] =
     React.useState<EmprestimoConsignado>(initialValue);
   const [showHRDialog, setShowHRDialog] = React.useState(false);
@@ -74,6 +81,26 @@ export default function EmprestimoConsignado(
     { key: "11", text: "11" },
     { key: "12", text: "12" },
   ];
+
+  if (hasApplicationInProgress) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <h3
+          style={{
+            color: "red",
+          }}
+        >
+          Você já possui uma solicitação em andamento
+        </h3>
+      </div>
+    );
+  }
 
   async function _onSave(data: EmprestimoConsignado): Promise<void> {
     await onSave(data);

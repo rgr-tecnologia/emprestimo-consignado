@@ -61,6 +61,8 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
     Status: "Rascunho",
   };
 
+  private hasApplicationInProgress: boolean = false;
+
   private getColaborador = async (): Promise<Colaborador> => {
     const response = await this.context.spHttpClient.get(
       `${this.context.pageContext.web.absoluteUrl}/_api/web/currentuser`,
@@ -121,6 +123,18 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
       this.context.pageContext.user.email === this.colaborador.Email;
     this.isMemberHR = await isMemberOfGroup(139, this.context);
 
+    const hasApplicationInProgress = await this.context.spHttpClient.get(
+      `${this.context.pageContext.web.absoluteUrl}/_api/web/lists(guid'${this.emprestimosConsignadosListId}')/items/?$filter=ColaboradorId eq ${this.colaborador.Id} and Status eq 'Em análise'`,
+      SPHttpClient.configurations.v1
+    );
+
+    this.hasApplicationInProgress =
+      (await hasApplicationInProgress.json()).value.length > 0;
+
+    if (this.hasApplicationInProgress) {
+      Promise.resolve();
+    }
+
     if (FormDisplayMode.Edit === this.displayMode) {
       const id = this.context.pageContext.listItem?.id;
 
@@ -159,6 +173,7 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
         initialValue: this.initialValue,
         isEmployee: this.isEmployee,
         isMemberHR: this.isMemberHR,
+        hasApplicationInProgress: this.hasApplicationInProgress,
       } as EmprestimoConsignadoProps
     );
 
