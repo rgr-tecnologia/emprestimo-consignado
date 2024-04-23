@@ -1,3 +1,6 @@
 import { EmprestimoConsignadoResponse } from "./EmprestimoConsignadoResponse";
 
-export type EmprestimoConsignadoUpdate = EmprestimoConsignadoResponse;
+export type EmprestimoConsignadoUpdate = Omit<
+  EmprestimoConsignadoResponse,
+  "Id"
+>;

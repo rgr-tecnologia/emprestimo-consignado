@@ -1,9 +1,11 @@
 import { Colaborador } from "../Colaborador/Colaborador";
+import { Status } from "../Status/Status";
 
 export type EmprestimoConsignado = {
   Colaborador: Colaborador;
-  ValorTotalEmprestimo: number;
-  ValorParcela: number;
+  ValorTotalEmprestimo: string;
+  ValorParcela: string;
   QuantidadeParcelas: number;
-  Status: string;
+  Status: Status;
+  JustificativaRH?: string;
 };
