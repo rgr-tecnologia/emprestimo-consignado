@@ -1,10 +1,11 @@
+import { Status } from "../Status/Status";
+
 export type EmprestimoConsignadoResponse = {
   Id: number;
   ColaboradorId: number;
-  ValorTotalEmprestimo: number;
-  ValorParcela: number;
+  ValorTotalEmprestimo: string;
+  ValorParcela: string;
   QuantidadeParcelas: number;
-  Status: JobItemStatus;
+  Status: Status;
+  JustificativaRH?: string;
 };
-
-export type JobItemStatus = "Em analise" | "Cancelado" | "Aprovado" | "Rejeitado"

@@ -8,10 +8,7 @@
       "formCustomizer": {
         "componentId": "c2217b6b-d9eb-4829-8220-8a9b21f75b81",
         "PageType": 8,
-        "RootFolder": "/sites/newportal/Lists/EmprestimoConsignado",
-        "properties": {
-          "sampleText": "Value"
-        }
+        "RootFolder": "/sites/newportal/Lists/EmprestimoConsignado"
       }
     },
     "emprestimoConsignado_NewForm": {
