@@ -9,7 +9,6 @@ import EmprestimoConsignado, {
 import { Colaborador } from "../../types/Colaborador/Colaborador";
 import { SPHttpClient } from "@microsoft/sp-http";
 import { ColaboradorResponse } from "../../types/Colaborador/ColaboradorResponse";
-import { UserProfile } from "../../types/UserProfile";
 import { EmprestimoConsignadoResponse } from "../../types/EmprestimoConsignado/EmprestimoConsignadoResponse";
 import { FormDisplayMode } from "@microsoft/sp-core-library";
 import { EmprestimoConsignadoCreate } from "../../types/EmprestimoConsignado/EmprestimoConsignadoCreate";
@@ -64,15 +63,10 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
   private hasApplicationInProgress: boolean = false;
 
   private getColaborador = async (): Promise<Colaborador> => {
-    const response = await this.context.spHttpClient.get(
-      `${this.context.pageContext.web.absoluteUrl}/_api/web/currentuser`,
-      SPHttpClient.configurations.v1
-    );
-
-    const userProfile: UserProfile = await response.json();
+    const { loginName } = this.context.pageContext.user;
 
     const colaboradorResponse = await this.context.spHttpClient.get(
-      `${this.context.pageContext.web.absoluteUrl}/_api/web/lists(guid'${this.colaboradoresListId}')/items?$filter=Email eq '${userProfile.Email}'`,
+      `${this.context.pageContext.web.absoluteUrl}/_api/web/lists(guid'${this.colaboradoresListId}')/items?$filter=Email eq '${loginName}'`,
       SPHttpClient.configurations.v1
     );
 
