@@ -7,9 +7,9 @@
       "pageUrl": "https://cjinter.sharepoint.com/sites/newportal/_layouts/15/SPListForm.aspx",
       "formCustomizer": {
         "componentId": "c2217b6b-d9eb-4829-8220-8a9b21f75b81",
-        "PageType": 4,
+        "PageType": 8,
         "RootFolder": "/sites/newportal/Lists/EmprestimoConsignado",
-        "ID": 57
+        
       }
     },
     "emprestimoConsignado_NewForm": {
@@ -27,9 +27,9 @@
       "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
       "formCustomizer": {
         "componentId": "c2217b6b-d9eb-4829-8220-8a9b21f75b81",
-        "PageType": 6,
+        "PageType": 8,
         "RootFolder": "/sites/mySite/Lists/MyList",
-        "ID": 1,
+        
         "properties": {
           "sampleText": "Value"
         }
@@ -39,9 +39,9 @@
       "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
       "formCustomizer": {
         "componentId": "c2217b6b-d9eb-4829-8220-8a9b21f75b81",
-        "PageType": 4,
+        "PageType": 8,
         "RootFolder": "/sites/mySite/Lists/MyList",
-        "ID": 1,
+       
         "properties": {
           "sampleText": "Value"
         }

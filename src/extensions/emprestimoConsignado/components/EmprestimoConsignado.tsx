@@ -37,8 +37,7 @@ export default function EmprestimoConsignado(
   const [observacaoRH, setObservacaoRH] = React.useState<string | undefined>(
     initialValue.JustificativaRH
   );
-  // const [isSent, setIsSent] = React.useState(false);
-
+  
   function onChangeValorEmprestimo(value: string | undefined): void {
     if (!value || Number.isNaN(Number(value))) {
       return;
@@ -141,55 +140,46 @@ export default function EmprestimoConsignado(
       }}
     >
       <Stack tokens={{ childrenGap: 10, padding: 20 }}>
-        <StackItem>
-          <Stack horizontal verticalAlign="center">
-            <StackItem>
+        <Stack horizontal tokens={{ childrenGap: 20 }}>
+          <StackItem>
+            <Stack tokens={{ childrenGap: 10 }}>
               <TextField
                 label="Nome do colaborador"
                 value={formValues.Colaborador.NomeColaborador}
                 readOnly={true}
                 borderless
               />
-            </StackItem>
-            <StackItem>
               <TextField
                 label="Departamento do colaborador"
                 value={formValues.Colaborador.Departamento.Title}
                 readOnly={true}
                 borderless
-                style={{ marginRight: "50px" }}
               />
-            </StackItem>
-            <StackItem>
               <TextField
                 label="Filial"
                 value={formValues.Colaborador.Filial.Title}
                 readOnly={true}
                 borderless
               />
-            </StackItem>
-
-            <StackItem>
+            </Stack>
+          </StackItem>
+          <StackItem>
+            <Stack tokens={{ childrenGap: 10 }}>
               <TextField
                 label="Data da solicitação"
                 value={new Date().toLocaleDateString("pt-BR")}
                 readOnly={true}
                 borderless
-                style={{ marginRight: "50px" }}
               />
-            </StackItem>
-
-            <StackItem>
               <TextField
                 label="Status"
                 value={formValues.Status.toString()}
                 readOnly={true}
                 borderless
-                style={{ marginRight: "50px" }}
               />
-            </StackItem>
-          </Stack>
-        </StackItem>
+            </Stack>
+          </StackItem>
+        </Stack>
         <StackItem>
           <Stack>
             <TextField
@@ -265,16 +255,6 @@ export default function EmprestimoConsignado(
             ) : null}
           </Stack>
         </StackItem>
-        {/* {isSent && (
-          <StackItem>
-            <MessageBar
-              messageBarType={MessageBarType.success}
-              isMultiline={false}
-            >
-              Solicitação salva com sucesso!
-            </MessageBar>
-          </StackItem>
-        )} */}
         <Dialog
           hidden={!showHRDialog}
           dialogContentProps={{
