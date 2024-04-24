@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-  ComboBox,
   DefaultButton,
   Dialog,
   DialogType,
@@ -37,49 +36,19 @@ export default function EmprestimoConsignado(
   const [observacaoRH, setObservacaoRH] = React.useState<string | undefined>(
     initialValue.JustificativaRH
   );
-  
-  function onChangeValorEmprestimo(value: string | undefined): void {
-    if (!value || Number.isNaN(Number(value))) {
-      return;
-    }
-
-    setFormValues((prev) => ({
-      ...prev,
-      ValorTotalEmprestimo: value,
-      ValorParcela: (Number(value) / prev.QuantidadeParcelas).toFixed(2),
-    }));
-  }
 
   function onChangeQuantidadeParcelas(
-    value: string | number | undefined
+    value: string | undefined
   ): void {
-    if (!value || Number.isNaN(Number(value))) {
-      return;
-    }
+    // Se o valor for indefinido ou não for um número válido, definir como 0
+    const newValue = value !== undefined && !isNaN(Number(value)) ? Number(value) : 0;
 
+    // Atualizar o estado com o novo valor
     setFormValues((prev) => ({
       ...prev,
-      QuantidadeParcelas: Number(value),
-      ValorParcela: (Number(prev.ValorTotalEmprestimo) / Number(value)).toFixed(
-        2
-      ),
+      QuantidadeParcelas: newValue,
     }));
   }
-
-  const QuantidadeParcelasOptions = [
-    { key: "1", text: "1" },
-    { key: "2", text: "2" },
-    { key: "3", text: "3" },
-    { key: "4", text: "4" },
-    { key: "5", text: "5" },
-    { key: "6", text: "6" },
-    { key: "7", text: "7" },
-    { key: "8", text: "8" },
-    { key: "9", text: "9" },
-    { key: "10", text: "10" },
-    { key: "11", text: "11" },
-    { key: "12", text: "12" },
-  ];
 
   if (hasApplicationInProgress && formValues.Status === "Rascunho") {
     return (
@@ -185,37 +154,33 @@ export default function EmprestimoConsignado(
             <TextField
               label="Valor total do empréstimo"
               value={formValues.ValorTotalEmprestimo}
-              onChange={(
-                e: React.FormEvent<HTMLInputElement>,
-                value: string | undefined
-              ) => onChangeValorEmprestimo(value)}
+              onChange={(e: React.FormEvent<HTMLInputElement>, value: string | undefined) => {
+                // Remove qualquer caracter que não seja número ou vírgula
+                const newValue = value?.replace(/[^0-9,]/g, '');
+                setFormValues((prev) => ({
+                  ...prev,
+                  ValorTotalEmprestimo: newValue || '0', // Evita erro caso o usuário limpe o campo
+                }));
+              }}
               readOnly={formValues.Status !== "Rascunho"}
               borderless={formValues.Status !== "Rascunho"}
             />
-            {formValues.Status === "Rascunho" ? (
-              <ComboBox
-                label="Quantidade de parcelas"
-                selectedKey={formValues.QuantidadeParcelas.toString()}
-                options={QuantidadeParcelasOptions}
-                onChange={(_, option) =>
-                  onChangeQuantidadeParcelas(option?.key)
-                }
-              />
-            ) : (
-              <>
-                <TextField
-                  label="Quantidade de parcelas"
-                  value={formValues.QuantidadeParcelas.toString()}
-                  readOnly={true}
-                  borderless
-                />
-              </>
-            )}
+            <TextField
+              label="Quantidade de parcelas"
+              value={formValues.QuantidadeParcelas.toString()}
+              onChange={(e: React.FormEvent<HTMLInputElement>, value: string | undefined) => onChangeQuantidadeParcelas(value)}
+              readOnly={false} // Removido readOnly para permitir edição
+              borderless={formValues.Status !== "Rascunho"}
+            />
             <TextField
               label="Valor da parcela (R$)"
               value={formValues.ValorParcela}
-              readOnly={true}
-              borderless
+              onChange={(e: React.FormEvent<HTMLInputElement>, value: string | undefined) => setFormValues((prev) => ({
+                ...prev,
+                ValorParcela: value || '0', // Evita erro caso o usuário limpe o campo
+              }))}
+              readOnly={formValues.Status !== "Rascunho"}
+              borderless={formValues.Status !== "Rascunho"}
             />
             {formValues.JustificativaRH && (
               <TextField
@@ -274,10 +239,7 @@ export default function EmprestimoConsignado(
               <TextField
                 multiline={true}
                 value={observacaoRH}
-                onChange={(
-                  e: React.FormEvent<HTMLInputElement>,
-                  value: string | undefined
-                ) => setObservacaoRH(value)}
+                onChange={(e: React.FormEvent<HTMLInputElement>, value: string | undefined) => setObservacaoRH(value)}
               />
             </StackItem>
             <StackItem>
