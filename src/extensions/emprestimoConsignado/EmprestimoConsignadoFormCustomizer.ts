@@ -34,6 +34,7 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
 
   private isEmployee: boolean = false;
   private isMemberHR: boolean = false;
+  private isAuthor: boolean = false;
   private colaborador: Colaborador = {
     Id: 0,
     NomeColaborador: "",
@@ -146,6 +147,11 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
 
       const emprestimoConsignado: EmprestimoConsignadoResponse =
         await emprestimoConsignadoResponse.json();
+
+      this.isAuthor =
+        emprestimoConsignado.AuthorId ===
+        this.context.pageContext.legacyPageContext.userId;
+
       this.initialValue = {
         Colaborador: this.colaborador,
         ValorTotalEmprestimo: emprestimoConsignado.ValorTotalEmprestimo,
@@ -170,6 +176,7 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
         initialValue: this.initialValue,
         isEmployee: this.isEmployee,
         isMemberHR: this.isMemberHR,
+        isAuthor: this.isAuthor,
         hasApplicationInProgress: this.hasApplicationInProgress,
       } as EmprestimoConsignadoProps
     );

@@ -8,4 +8,5 @@ export type EmprestimoConsignadoResponse = {
   QuantidadeParcelas: number;
   Status: Status;
   JustificativaRH?: string;
+  AuthorId: number;
 };

@@ -15,6 +15,7 @@ import { EmprestimoConsignadoResponse } from "../../../types/EmprestimoConsignad
 export interface EmprestimoConsignadoProps {
   isEmployee: boolean;
   isMemberHR: boolean;
+  isAuthor: boolean;
   initialValue: EmprestimoConsignado;
   onSave: (data: EmprestimoConsignado) => Promise<EmprestimoConsignadoResponse>;
   hasApplicationInProgress: boolean;
@@ -28,6 +29,7 @@ export default function EmprestimoConsignado(
     onSave,
     isEmployee,
     isMemberHR,
+    isAuthor,
     hasApplicationInProgress,
   } = props;
   const [formValues, setFormValues] =
@@ -37,11 +39,10 @@ export default function EmprestimoConsignado(
     initialValue.JustificativaRH
   );
 
-  function onChangeQuantidadeParcelas(
-    value: string | undefined
-  ): void {
+  function onChangeQuantidadeParcelas(value: string | undefined): void {
     // Se o valor for indefinido ou não for um número válido, definir como 0
-    const newValue = value !== undefined && !isNaN(Number(value)) ? Number(value) : 0;
+    const newValue =
+      value !== undefined && !isNaN(Number(value)) ? Number(value) : 0;
 
     // Atualizar o estado com o novo valor
     setFormValues((prev) => ({
@@ -154,12 +155,15 @@ export default function EmprestimoConsignado(
             <TextField
               label="Valor total do empréstimo"
               value={formValues.ValorTotalEmprestimo}
-              onChange={(e: React.FormEvent<HTMLInputElement>, value: string | undefined) => {
+              onChange={(
+                e: React.FormEvent<HTMLInputElement>,
+                value: string | undefined
+              ) => {
                 // Remove qualquer caracter que não seja número, vírgula ou ponto
-                const newValue = value?.replace(/[^0-9.,]/g, '');
+                const newValue = value?.replace(/[^0-9.,]/g, "");
                 setFormValues((prev) => ({
                   ...prev,
-                  ValorTotalEmprestimo: newValue || '0', // Evita erro caso o usuário limpe o campo
+                  ValorTotalEmprestimo: newValue || "0", // Evita erro caso o usuário limpe o campo
                 }));
               }}
               readOnly={formValues.Status !== "Rascunho"}
@@ -168,17 +172,25 @@ export default function EmprestimoConsignado(
             <TextField
               label="Quantidade de parcelas"
               value={formValues.QuantidadeParcelas.toString()}
-              onChange={(e: React.FormEvent<HTMLInputElement>, value: string | undefined) => onChangeQuantidadeParcelas(value)}
+              onChange={(
+                e: React.FormEvent<HTMLInputElement>,
+                value: string | undefined
+              ) => onChangeQuantidadeParcelas(value)}
               readOnly={false} // Removido readOnly para permitir edição
               borderless={formValues.Status !== "Rascunho"}
             />
             <TextField
               label="Valor da parcela (R$)"
               value={formValues.ValorParcela}
-              onChange={(e: React.FormEvent<HTMLInputElement>, value: string | undefined) => setFormValues((prev) => ({
-                ...prev,
-                ValorParcela: value || '0', // Evita erro caso o usuário limpe o campo
-              }))}
+              onChange={(
+                e: React.FormEvent<HTMLInputElement>,
+                value: string | undefined
+              ) =>
+                setFormValues((prev) => ({
+                  ...prev,
+                  ValorParcela: value || "0", // Evita erro caso o usuário limpe o campo
+                }))
+              }
               readOnly={formValues.Status !== "Rascunho"}
               borderless={formValues.Status !== "Rascunho"}
             />
@@ -210,7 +222,8 @@ export default function EmprestimoConsignado(
               </StackItem>
             ) : null}
 
-            {formValues.Status === "Em análise" && isMemberHR ? (
+            {(formValues.Status === "Em análise" && isMemberHR) ||
+            (!isAuthor && isMemberHR) ? (
               <HRButtons
                 onApprove={handleApprove}
                 onReject={() => {
@@ -239,7 +252,10 @@ export default function EmprestimoConsignado(
               <TextField
                 multiline={true}
                 value={observacaoRH}
-                onChange={(e: React.FormEvent<HTMLInputElement>, value: string | undefined) => setObservacaoRH(value)}
+                onChange={(
+                  e: React.FormEvent<HTMLInputElement>,
+                  value: string | undefined
+                ) => setObservacaoRH(value)}
               />
             </StackItem>
             <StackItem>
