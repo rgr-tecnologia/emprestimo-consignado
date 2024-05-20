@@ -155,8 +155,8 @@ export default function EmprestimoConsignado(
               label="Valor total do empréstimo"
               value={formValues.ValorTotalEmprestimo}
               onChange={(e: React.FormEvent<HTMLInputElement>, value: string | undefined) => {
-                // Remove qualquer caracter que não seja número ou vírgula
-                const newValue = value?.replace(/[^0-9,]/g, '');
+                // Remove qualquer caracter que não seja número, vírgula ou ponto
+                const newValue = value?.replace(/[^0-9.,]/g, '');
                 setFormValues((prev) => ({
                   ...prev,
                   ValorTotalEmprestimo: newValue || '0', // Evita erro caso o usuário limpe o campo
