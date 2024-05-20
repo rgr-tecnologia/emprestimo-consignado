@@ -222,8 +222,10 @@ export default function EmprestimoConsignado(
               </StackItem>
             ) : null}
 
-            {(formValues.Status === "Em análise" && isMemberHR) ||
-            (!isAuthor && isMemberHR) ? (
+            {formValues.Status === "Em análise" &&
+            isMemberHR &&
+            !isAuthor &&
+            isMemberHR ? (
               <HRButtons
                 onApprove={handleApprove}
                 onReject={() => {
