@@ -63,11 +63,11 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
 
   private hasApplicationInProgress: boolean = false;
 
-  private getColaborador = async (): Promise<Colaborador> => {
+  private getColaborador = async (email = null): Promise<Colaborador> => {
     const { loginName } = this.context.pageContext.user;
-
+    
     const colaboradorResponse = await this.context.spHttpClient.get(
-      `${this.context.pageContext.web.absoluteUrl}/_api/web/lists(guid'${this.colaboradoresListId}')/items?$filter=Email eq '${loginName}'`,
+      `${this.context.pageContext.web.absoluteUrl}/_api/web/lists(guid'${this.colaboradoresListId}')/items?$filter=Email eq '${email ?? loginName}'`,
       SPHttpClient.configurations.v1
     );
 
@@ -141,17 +141,22 @@ export default class EmprestimoConsignadoFormCustomizer extends BaseFormCustomiz
       }
 
       const emprestimoConsignadoResponse = await this.context.spHttpClient.get(
-        `${this.context.pageContext.web.absoluteUrl}/_api/web/lists(guid'${this.emprestimosConsignadosListId}')/items(${id})`,
+        `${this.context.pageContext.web.absoluteUrl}/_api/web/lists(guid'${this.emprestimosConsignadosListId}')/items(${id})?$select=Id,ColaboradorId,ValorTotalEmprestimo,ValorParcela,QuantidadeParcelas,Status,JustificativaRH,AuthorId,Author/Name,Author/Title,Author/ID,Author/EMail&$expand=Author`,
         SPHttpClient.configurations.v1
       );
 
+
       const emprestimoConsignado: EmprestimoConsignadoResponse =
         await emprestimoConsignadoResponse.json();
-
+        
       this.isAuthor =
         emprestimoConsignado.AuthorId ===
         this.context.pageContext.legacyPageContext.userId;
-
+        
+      if(!this.isAuthor){
+        this.colaborador = await this.getColaborador(emprestimoConsignado?.Author?.EMail);
+      }
+      
       this.initialValue = {
         Colaborador: this.colaborador,
         ValorTotalEmprestimo: emprestimoConsignado.ValorTotalEmprestimo,

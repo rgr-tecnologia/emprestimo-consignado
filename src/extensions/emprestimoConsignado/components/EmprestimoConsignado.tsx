@@ -32,6 +32,7 @@ export default function EmprestimoConsignado(
     isAuthor,
     hasApplicationInProgress,
   } = props;
+  
   const [formValues, setFormValues] =
     React.useState<EmprestimoConsignado>(initialValue);
   const [showHRDialog, setShowHRDialog] = React.useState(false);
@@ -39,15 +40,28 @@ export default function EmprestimoConsignado(
     initialValue.JustificativaRH
   );
 
+  function formatCurrency(valor: string): string {
+    valor = valor.replace(/\D/g, '');
+    valor = valor.replace(/(\d)(\d{2})$/, '$1,$2');
+    valor = valor.replace(/\B(?=(\d{3})+\b)/g, '.');
+  return valor;
+  }
+
   function onChangeQuantidadeParcelas(value: string | undefined): void {
-    // Se o valor for indefinido ou não for um número válido, definir como 0
     const newValue =
       value !== undefined && !isNaN(Number(value)) ? Number(value) : 0;
 
-    // Atualizar o estado com o novo valor
     setFormValues((prev) => ({
       ...prev,
       QuantidadeParcelas: newValue,
+    }));
+  }
+
+  function onChangeValue(name: keyof EmprestimoConsignado, value: string | undefined) {
+    const formattedValue = formatCurrency(value || "0");
+    setFormValues((prev) => ({
+      ...prev,
+      [name]: formattedValue,
     }));
   }
 
@@ -100,7 +114,6 @@ export default function EmprestimoConsignado(
       Status: "Cancelado",
     });
   }
-
   return (
     <div
       style={{
@@ -115,7 +128,7 @@ export default function EmprestimoConsignado(
             <Stack tokens={{ childrenGap: 10 }}>
               <TextField
                 label="Nome do colaborador"
-                value={formValues.Colaborador.NomeColaborador}
+                value={formValues.Colaborador.NomeColaborador} 
                 readOnly={true}
                 borderless
               />
@@ -154,18 +167,12 @@ export default function EmprestimoConsignado(
           <Stack>
             <TextField
               label="Valor total do empréstimo"
-              value={formValues.ValorTotalEmprestimo}
+              value={formValues.ValorTotalEmprestimo === "0" ? ""  : formValues.ValorTotalEmprestimo} 
+              placeholder="0"
               onChange={(
                 e: React.FormEvent<HTMLInputElement>,
                 value: string | undefined
-              ) => {
-                // Remove qualquer caracter que não seja número, vírgula ou ponto
-                const newValue = value?.replace(/[^0-9.,]/g, "");
-                setFormValues((prev) => ({
-                  ...prev,
-                  ValorTotalEmprestimo: newValue || "0", // Evita erro caso o usuário limpe o campo
-                }));
-              }}
+              ) => onChangeValue("ValorTotalEmprestimo", value)}
               readOnly={formValues.Status !== "Rascunho"}
               borderless={formValues.Status !== "Rascunho"}
             />
@@ -176,21 +183,17 @@ export default function EmprestimoConsignado(
                 e: React.FormEvent<HTMLInputElement>,
                 value: string | undefined
               ) => onChangeQuantidadeParcelas(value)}
-              readOnly={false} // Removido readOnly para permitir edição
+              readOnly={false}
               borderless={formValues.Status !== "Rascunho"}
             />
             <TextField
               label="Valor da parcela (R$)"
-              value={formValues.ValorParcela}
+              value={formValues.ValorParcela === "0" ? "" : formValues.ValorParcela}
+              placeholder="0"
               onChange={(
                 e: React.FormEvent<HTMLInputElement>,
                 value: string | undefined
-              ) =>
-                setFormValues((prev) => ({
-                  ...prev,
-                  ValorParcela: value || "0", // Evita erro caso o usuário limpe o campo
-                }))
-              }
+              ) => onChangeValue("ValorParcela", value)}
               readOnly={formValues.Status !== "Rascunho"}
               borderless={formValues.Status !== "Rascunho"}
             />
@@ -224,8 +227,7 @@ export default function EmprestimoConsignado(
 
             {formValues.Status === "Em análise" &&
             isMemberHR &&
-            !isAuthor &&
-            isMemberHR ? (
+            !isAuthor ? (
               <HRButtons
                 onApprove={handleApprove}
                 onReject={() => {

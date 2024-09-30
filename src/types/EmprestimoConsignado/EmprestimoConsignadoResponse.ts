@@ -2,6 +2,7 @@ import { Status } from "../Status/Status";
 
 export type EmprestimoConsignadoResponse = {
   Id: number;
+  Author?: any;
   ColaboradorId: number;
   ValorTotalEmprestimo: string;
   ValorParcela: string;
